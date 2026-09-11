@@ -1,0 +1,28 @@
+// Colors.qml — singleton gerado pelo chezmoi a partir de .chezmoidata/colors.yaml.
+// Fonte única de verdade da paleta pro Quickshell — mesmo princípio do gtk.css/kitty.conf/
+// hyprland.conf: nenhuma cor escrita direto em nenhum outro arquivo .qml, todo mundo importa
+// "Colors" e lê as propriedades daqui. Trocar de tema no futuro = editar colors.yaml + chezmoi apply,
+// sem tocar em nenhum outro .qml.
+// NÃO editar o arquivo final direto (~/.config/quickshell/Colors.qml) — editar este .tmpl.
+pragma Singleton
+import QtQuick
+
+QtObject {
+    readonly property color bg: "{{ .colors.bg }}"
+    readonly property color bgDarker: "{{ .colors.bg_darker }}"
+    readonly property color bgAlt: "{{ .colors.bg_alt }}"
+    readonly property color fg: "{{ .colors.fg }}"
+    readonly property color fgMuted: "{{ .colors.fg_muted }}"
+    readonly property color accent: "{{ .colors.accent }}"
+    readonly property color accentBright: "{{ .colors.accent_bright }}"
+    readonly property color accentDim: "{{ .colors.accent_dim }}"
+    readonly property color borderActive: "{{ .colors.border_active }}"
+    readonly property color borderInactive: "{{ .colors.border_inactive }}"
+
+    // Helper: mesma cor de bg_alt, mas com alpha reduzido — usado no fundo semitransparente
+    // da barra (decisão do doc 07: "enxuta com fundo semitransparente", estilo da config antiga
+    // em rgba(80,4,23,0.8)). Ajuste o alpha aqui se a transparência não estiver no ponto certo.
+    function barBackground() {
+        return Qt.rgba(bgAlt.r, bgAlt.g, bgAlt.b, 0.78)
+    }
+}

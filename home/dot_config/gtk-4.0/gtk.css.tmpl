@@ -1,0 +1,46 @@
+# GTK4/libadwaita — mesma técnica do gtk-3.0/gtk.css.tmpl, mas com o conjunto de variáveis que o
+# libadwaita usa (accent_color, window_bg_color, card_bg_color, etc.) — nomes diferentes do GTK3,
+# mesmo princípio: sobrescrever a variável nomeada em vez de escrever um tema do zero.
+# NÃO editar o arquivo final direto — editar este .tmpl e rodar `chezmoi apply`.
+
+@define-color accent_color {{ .colors.accent }};
+@define-color accent_bg_color {{ .colors.accent }};
+@define-color accent_fg_color {{ .colors.bg }};
+
+@define-color window_bg_color {{ .colors.bg }};
+@define-color window_fg_color {{ .colors.fg }};
+@define-color view_bg_color {{ .colors.bg_alt }};
+@define-color view_fg_color {{ .colors.fg }};
+
+@define-color headerbar_bg_color {{ .colors.bg_alt }};
+@define-color headerbar_fg_color {{ .colors.fg }};
+@define-color headerbar_border_color {{ .colors.border_inactive }};
+@define-color headerbar_backdrop_color {{ .colors.bg }};
+@define-color headerbar_shade_color rgba(0,0,0,0.36); # sombra sob a headerbar, não é cor de paleta
+
+@define-color card_bg_color {{ .colors.bg_alt }};
+@define-color card_fg_color {{ .colors.fg }};
+@define-color card_shade_color rgba(0,0,0,0.25); # idem — sombra, não paleta
+
+@define-color dialog_bg_color {{ .colors.bg }};
+@define-color dialog_fg_color {{ .colors.fg }};
+@define-color popover_bg_color {{ .colors.bg_alt }};
+@define-color popover_fg_color {{ .colors.fg }};
+
+@define-color shade_color rgba(0,0,0,0.25);
+@define-color scrollbar_outline_color {{ .colors.border_inactive }};
+
+# Cores de estado — mesma lógica "vermelho espalhado" do resto da paleta em vez do
+# verde/amarelo/vermelho padrão do libadwaita.
+@define-color destructive_color {{ .colors.accent_bright }};
+@define-color destructive_bg_color {{ .colors.accent_bright }};
+@define-color destructive_fg_color {{ .colors.bg }};
+@define-color success_color {{ .colors.accent_dim }};
+@define-color success_bg_color {{ .colors.accent_dim }};
+@define-color success_fg_color {{ .colors.fg }};
+@define-color warning_color {{ .colors.accent_dim }};
+@define-color warning_bg_color {{ .colors.accent_dim }};
+@define-color warning_fg_color {{ .colors.bg }};
+@define-color error_color {{ .colors.accent_bright }};
+@define-color error_bg_color {{ .colors.accent_bright }};
+@define-color error_fg_color {{ .colors.bg }};

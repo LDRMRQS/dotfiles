@@ -1,0 +1,3 @@
+-- autocmds.lua — carregado no evento VeryLazy (doc 03).
+-- Defaults completos da LazyVim: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
+-- Nada específico nosso ainda — fica como stub padrão do template oficial.

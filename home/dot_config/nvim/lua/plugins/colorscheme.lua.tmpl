@@ -1,0 +1,91 @@
+-- colorscheme.lua — gerado pelo chezmoi a partir de .chezmoidata/colors.yaml (doc 07).
+-- Base LazyVim (doc 03): isto é um arquivo de spec em lua/plugins/, no padrão de override
+-- de plugin da LazyVim, não uma config de colorscheme "solta".
+--
+-- Colorscheme: bjarneo/aether.nvim — mesmo usado pelo omarchy-brutalism-theme (doc 07), então
+-- já nasce compatível com metade da nossa paleta (a metade brutalism do mashup). O que falta é
+-- a outra metade: o aether.nvim "de fábrica" vem calibrado pro brutalism PURO (paleta própria,
+-- ver upstream), não pro mashup brutalism+NES que fechamos em colors.yaml — por isso ele é
+-- reconfigurado aqui via `opts.colors`, em vez de usado com a paleta padrão dele.
+--
+-- Princípio de mapeamento — o MESMO já aplicado em kitty.conf.tmpl (ver comentário lá:
+-- "abordagem monocromático + vermelho espalhado"): o aether.nvim nasceu pensado pra ter um
+-- arco-íris de 6 matizes (yellow/orange/green/cyan/blue/purple/brown) pra sintaxe, mas nosso
+-- colors.yaml só define 2 tons de fundo/texto neutros + 3 tons de vermelho, de propósito (ver
+-- doc 07: "tudo vermelho" cansa a leitura de código). Resultado: qualquer matiz "fria" (verde/
+-- azul/ciano) desce pra cinza neutro (fg/fg_muted) e qualquer matiz "quente" (amarelo/laranja/
+-- marrom/roxo) desce pra vermelho apagado (accent_dim/accent_bright) — sintaxe ainda com
+-- contraste suficiente pra ler código (keyword ≠ string ≠ comment), mas sem introduzir nenhuma
+-- cor que não exista em colors.yaml. Isso fecha o último item que ficava em aberto no doc 07.
+--
+-- Nota de tiers: o aether.nvim pede 4 tons de fundo (bg/dark_bg/darker_bg/lighter_bg) e 4 de
+-- texto (dark_fg/fg/light_fg/bright_fg), mas colors.yaml só define 3 e 2 respectivamente (por
+-- design — ver colors.yaml). Em vez de inventar tom novo só pra preencher a tabela, os tiers que
+-- sobram colapsam no tom mais próximo já existente (ex: darker_bg = dark_bg = bg_darker) —
+-- mesma lógica de "uma fonte única, sem cor paralela" do resto do projeto.
+
+return {
+  {
+    "bjarneo/aether.nvim",
+    branch = "v3",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      colors = {
+        -- Fundos — 3 tons reais do colors.yaml, 2 tiers do aether colapsados no mesmo tom
+        bg         = "{{ .colors.bg }}",
+        dark_bg    = "{{ .colors.bg_darker }}",
+        darker_bg  = "{{ .colors.bg_darker }}", -- colapsado: sem um 4º tom mais escuro na paleta
+        lighter_bg = "{{ .colors.bg_alt }}",
+        background = "{{ .colors.bg }}",
+
+        -- Textos — 2 tons reais do colors.yaml, 4 tiers do aether colapsados nesses 2
+        fg        = "{{ .colors.fg }}",
+        dark_fg   = "{{ .colors.fg_muted }}",
+        light_fg  = "{{ .colors.fg }}",       -- colapsado: sem um tom "mais claro que fg"
+        bright_fg = "{{ .colors.fg }}",       -- colapsado: idem
+        muted     = "{{ .colors.fg_muted }}",
+        foreground = "{{ .colors.fg }}",
+
+        -- Vermelho "de marca" — direto do colors.yaml, é o que já vem de fábrica no aether
+        -- (o brutalism upstream usa a mesma ideia), só troca o hex pelo nosso
+        accent     = "{{ .colors.accent }}",
+        red        = "{{ .colors.accent }}",
+        bright_red = "{{ .colors.accent_bright }}",
+
+        -- Matizes "quentes" (amarelo/laranja/marrom/roxo) → vermelho apagado, mesmo destino que
+        -- amarelo/magenta levam no kitty.conf.tmpl (color3/color5 → accent_dim)
+        yellow        = "{{ .colors.accent_dim }}",
+        orange        = "{{ .colors.accent_dim }}",
+        brown         = "{{ .colors.accent_dim }}",
+        purple        = "{{ .colors.accent_dim }}",
+        bright_yellow = "{{ .colors.accent_bright }}",
+        bright_purple = "{{ .colors.accent_bright }}",
+
+        -- Matizes "frias" (verde/ciano/azul) → cinza neutro, mesmo destino que green/blue/cyan
+        -- levam no kitty.conf.tmpl (color2/color4/color6 → fg_muted, color10/12/14 → fg)
+        green        = "{{ .colors.fg_muted }}",
+        cyan         = "{{ .colors.fg_muted }}",
+        blue         = "{{ .colors.fg_muted }}",
+        bright_green = "{{ .colors.fg }}",
+        bright_cyan  = "{{ .colors.fg }}",
+        bright_blue  = "{{ .colors.fg }}",
+
+        -- Cursor e seleção — mesmos valores usados no kitty.conf.tmpl (cursor em accent_bright,
+        -- texto selecionado em bg, fundo da seleção em accent_bright), pra bater terminal↔editor
+        cursor                = "{{ .colors.accent_bright }}",
+        selection             = "{{ .colors.bg_alt }}",
+        selection_foreground  = "{{ .colors.bg }}",
+        selection_background  = "{{ .colors.accent_bright }}",
+      },
+    },
+    config = function(_, opts)
+      require("aether").setup(opts)
+      vim.cmd.colorscheme("aether")
+    end,
+  },
+
+  -- Diz pra LazyVim que este é o colorscheme ativo (evita LazyVim tentar carregar o default
+  -- dele em algum fallback, ex.: antes do plugin acima terminar de carregar)
+  { "LazyVim/LazyVim", opts = { colorscheme = "aether" } },
+}

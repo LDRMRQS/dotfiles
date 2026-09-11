@@ -1,0 +1,17 @@
+# Fonte única de verdade da paleta — ver doc 07 (claude/07-personalizacao.md) pra racional completo.
+# Mashup: omarchy-brutalism-theme (vermelho de marca) + omarchy-nes-theme (base neutra + vermelho espalhado).
+#
+# Nomenclatura: chaves em snake_case (não kebab-case) de propósito — o Go template do chezmoi
+# acessa isso como `.colors.accent_bright`; com hífen precisaria de `index .colors "accent-bright"`
+# em todo lugar, o que é mais chato de ler/escrever nos templates.
+colors:
+  bg: "#101010"             # NES — fundo principal
+  bg_darker: "#060606"      # NES — sombras/profundidade
+  bg_alt: "#1f1f1f"         # NES — painéis elevados (barra, notificações)
+  fg: "#cecfc9"             # NES — texto principal, neutro
+  fg_muted: "#9d9f93"       # NES — texto secundário/desabilitado
+  accent: "#940404"         # brutalism — vermelho "de marca": bordas, ícones, workspace ativo, prompt
+  accent_bright: "#da0f0f"  # NES — vermelho vivo: hover/foco/alertas
+  accent_dim: "#7f2a25"     # NES — vermelho apagado: elementos secundários (ícones inativos, sintaxe)
+  border_active: "#940404"  # = accent
+  border_inactive: "#525351" # NES muted — borda de janela inativa

@@ -1,0 +1,9 @@
+# Registra os singletons do shell — precisam de entrada explícita no qmldir pra virar
+# instância única compartilhada (sem isso, cada referência criaria uma cópia própria).
+# Bar.qml, Dashboard.qml, BarIconButton.qml não precisam de entrada aqui: são tipos comuns,
+# resolvidos automaticamente por estarem no mesmo diretório (import implícito de diretório).
+# Não precisa de .tmpl neste arquivo — não referencia nenhuma cor, só registra o módulo.
+singleton Colors 1.0 Colors.qml
+singleton DashboardState 1.0 DashboardState.qml
+singleton LauncherState 1.0 LauncherState.qml
+singleton SessionMenuState 1.0 SessionMenuState.qml

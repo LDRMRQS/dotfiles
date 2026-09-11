@@ -1,0 +1,37 @@
+<!--
+system/libvirt/sharepoint-sync-virtiofs.xml — arquivo de REFERÊNCIA (doc 06: domínio system/).
+
+NÃO é um arquivo que o libvirt lê sozinho — é um trecho pra colar dentro da definição XML da VM
+Windows (`virsh edit <nome-da-vm>`, dentro de <domain><devices>...</devices></domain>), na hora
+de criar a VM (doc 01). Implementa o compartilhamento virtiofs host↔VM descrito no doc 01: o
+virtiofsd expõe uma pasta do host Arch, o Windows guest monta ela via driver VirtioFS +
+WinFsp, e o cliente OneDrive/SharePoint dentro do Windows sincroniza pra essa mesma pasta que
+você edita direto no Arch com LibreOffice/Visidata.
+
+Ajustar:
+  - <source dir='...'/>   → caminho real da pasta compartilhada no host (dentro de um dos
+                             subvolumes Btrfs do doc 01, NÃO dentro de @vm-images)
+  - <target dir='...'/>   → tag arbitrária (não é um caminho de verdade) que o Windows guest usa
+                             pra identificar o compartilhamento ao montar
+  - domain name/nome da VM → confirmar o nome real quando a VM for criada — o doc 07 usa
+                             `win-sharepoint` como placeholder no widget da barra do Quickshell,
+                             mesma pendência registrada lá.
+-->
+<filesystem type='mount' accessmode='passthrough'>
+  <driver type='virtiofs'/>
+  <source dir='/caminho/para/pasta-compartilhada'/>
+  <target dir='sharepoint-sync'/>
+</filesystem>
+
+<!--
+Também precisa, no <domain> como um todo (não só no <devices>), de memoria compartilhada pro
+virtiofs funcionar:
+
+<memoryBacking>
+  <source type='memfd'/>
+  <access mode='shared'/>
+</memoryBacking>
+
+E o daemon `virtiofsd` (pacote do doc 02) precisa estar rodando — o libvirt moderno consegue
+subir ele automaticamente ao iniciar a VM, desde que o pacote esteja instalado.
+-->

@@ -1,0 +1,102 @@
+# hyprlock — config gerada pelo chezmoi a partir de .chezmoidata/colors.yaml
+# Base: adaptação da config antiga, ver doc 07 pra racional completo.
+# NÃO editar o arquivo final direto (~/.config/hypr/hyprlock.conf) — editar este .tmpl e
+# rodar `chezmoi apply`.
+#
+# Fonte: JetBrainsMono Nerd Font (Bold no relógio) — decidido em vez da Adwaita Mono, pra reusar
+# a mesma família do terminal/editor (doc 02/03) em vez de importar mais uma fonte só pro
+# lockscreen; reforça o princípio de coerência do projeto (uma só voz tipográfica no sistema
+# inteiro) e já tem o peso/contraste (Bold/ExtraBold) que um relógio grande pede.
+#
+# Wallpapers: entram versionados no repo (só 3 arquivos leves — wpp3.jpg pro desktop, wpp1.jpg
+# pro lockscreen, user.jpeg como avatar — ver home/dot_config/backgrounds/). Path abaixo aponta
+# pra ~/.config/backgrounds/, mesma convenção da config antiga.
+
+# BACKGROUND — tela única, wpp1.jpg (decidido: wallpaper de lockscreen, ver doc 07)
+background {
+    monitor =
+    path = ~/.config/backgrounds/wpp1.jpg
+    blur_size = 3
+    blur_passes = 1
+    contrast = 0.8916
+    brightness = 0.6666
+    vibrancy = 0.1696
+    vibrancy_darkness = 0.0
+}
+
+# GENERAL
+general {
+    no_fade_in = false
+    grace = 0
+    disable_loading_bar = false
+}
+
+# Relógio grande
+label {
+    monitor =
+    text = cmd[update:1000] echo "<span>$(date +"%H:%M")</span>"
+    color = rgba({{ .colors.fg | trimPrefix "#" }}b3)
+    font_size = 130
+    font_family = JetBrainsMono Nerd Font Bold
+    position = 0, 240
+    halign = center
+    valign = center
+}
+
+# Dia da semana / data
+label {
+    monitor =
+    text = cmd[update:1000] date +"<b>%A, %B %d, %Y</b>"
+    color = rgba({{ .colors.fg_muted | trimPrefix "#" }}b3)
+    font_size = 20
+    font_family = JetBrainsMono Nerd Font
+    shadow_passes = 0
+    shadow_size = 4
+    position = -40,-20
+    halign = right
+    valign = top
+}
+
+# Foto de perfil
+image {
+    monitor =
+    path = ~/.config/backgrounds/user.jpeg
+    border_color = rgba({{ .colors.accent | trimPrefix "#" }}ff)
+    border_size = 3
+    size = 120
+    rounding = -1
+    rotate = 0
+    reload_time = -1
+    reload_cmd =
+    position = 0, -20
+    halign = center
+    valign = center
+}
+
+# CAMPO DE SENHA
+input-field {
+    monitor =
+    size = 250, 60
+    outline_thickness = 2
+    dots_rounding = 4
+    dots_size = 0.2
+    dots_spacing = 0.2
+    dots_center = true
+    outer_color = rgba({{ .colors.border_inactive | trimPrefix "#" }}80)
+    inner_color = rgba({{ .colors.bg_alt | trimPrefix "#" }}cc)
+    font_color = rgba({{ .colors.fg | trimPrefix "#" }}ff)
+    check_color = rgba({{ .colors.accent | trimPrefix "#" }}ff)
+    fail_color = rgba({{ .colors.accent_bright | trimPrefix "#" }}ff)
+    fade_on_empty = false
+    font_family = JetBrainsMono Nerd Font
+    shadow_color = rgba({{ .colors.bg_darker | trimPrefix "#" }}80)
+    shadow_passes = 2
+    shadow_size = 2
+    rounding = 20
+    placeholder_text = <i><span foreground="##{{ .colors.fg_muted | trimPrefix "#" }}">Digite a senha</span></i>
+    hide_input = false
+    fail_text = <b>Senha incorreta</b>
+    position = 0, -225
+    halign = center
+    valign = center
+}

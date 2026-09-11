@@ -1,0 +1,187 @@
+// Main.qml — tema SDDM "arch-ricing", gerado pelo chezmoi a partir de .chezmoidata/colors.yaml
+// (mesma fonte única de verdade do resto — ver doc 07). SDDM usa QML igual o Quickshell, mas
+// numa API mais antiga/estável (Qt5-style, com SddmComponents) — não dá pra reaproveitar
+// componentes do Quickshell diretamente, mas a PALETA é a mesma, o que já garante a
+// continuidade visual do primeiro ao último pixel (tela de login → sessão Hyprland).
+//
+// IMPORTANTE (ver doc 07/06): este arquivo vive em home/ (pra ser templated pelo chezmoi),
+// mas o SDDM lê temas de /usr/share/sddm/themes/ — fora do $HOME e sem acesso de leitura a
+// ele (diretório home costuma ser 700). Por isso NÃO editar o arquivo final direto nem supor
+// que `chezmoi apply` sozinho já atualiza o que o SDDM enxerga: o hook
+// `run_after_10-sync-sddm-theme.sh` copia esta pasta renderizada pra
+// /usr/share/sddm/themes/arch-ricing/ automaticamente depois de todo `chezmoi apply`.
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import SddmComponents 2.0
+
+Rectangle {
+    id: root
+    width: 1920
+    height: 1080
+    color: "{{ .colors.bg }}"
+
+    Image {
+        anchors.fill: parent
+        source: "background.jpg" // cópia de wpp1.jpg — mesmo wallpaper do hyprlock (doc 07):
+        // login e lockscreen são as duas "superfícies de autenticação" do sistema, faz sentido
+        // compartilharem a mesma imagem em vez de introduzir uma 4ª imagem só pro SDDM.
+        fillMode: Image.PreserveAspectCrop
+    }
+
+    // Escurece um pouco o wallpaper pra o texto/campo de senha terem contraste garantido,
+    // mesma lógica do overlay que o hyprlock não precisa (ele já usa cores sólidas no card).
+    Rectangle {
+        anchors.fill: parent
+        color: "{{ .colors.bg_darker }}"
+        opacity: 0.35
+    }
+
+    Column {
+        anchors.centerIn: parent
+        spacing: 18
+
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: Qt.formatDateTime(new Date(), "hh:mm")
+            color: "{{ .colors.fg }}"
+            font.family: "JetBrainsMono Nerd Font"
+            font.pointSize: 42
+            font.bold: true
+        }
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: Qt.formatDateTime(new Date(), "dddd, dd MMMM")
+            color: "{{ .colors.fg_muted }}"
+            font.family: "JetBrainsMono Nerd Font"
+            font.pointSize: 14
+        }
+
+        // Card de login — mesmo vocabulário visual do hyprlock.conf.tmpl (bg_alt + borda
+        // border_inactive, cantos arredondados, accent no elemento em foco).
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 340
+            height: 190
+            radius: 14
+            color: "{{ .colors.bg_alt }}"
+            border.width: 1
+            border.color: "{{ .colors.border_inactive }}"
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 20
+                spacing: 12
+
+                ComboBox {
+                    id: userBox
+                    Layout.fillWidth: true
+                    model: userModel
+                    textRole: "name"
+                    currentIndex: userModel.lastIndex >= 0 ? userModel.lastIndex : 0
+                }
+
+                TextField {
+                    id: passwordField
+                    Layout.fillWidth: true
+                    echoMode: TextInput.Password
+                    placeholderText: "Senha"
+                    color: "{{ .colors.fg }}"
+                    font.family: "JetBrainsMono Nerd Font"
+
+                    background: Rectangle {
+                        radius: 8
+                        color: "{{ .colors.bg }}"
+                        border.width: 1
+                        border.color: passwordField.activeFocus ? "{{ .colors.accent }}" : "{{ .colors.border_inactive }}"
+                    }
+
+                    Keys.onReturnPressed: doLogin()
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    ComboBox {
+                        id: sessionBox
+                        Layout.fillWidth: true
+                        model: sessionModel
+                        textRole: "name"
+                        currentIndex: sessionModel.lastIndex >= 0 ? sessionModel.lastIndex : 0
+                    }
+
+                    Button {
+                        text: "Entrar"
+                        onClicked: doLogin()
+
+                        background: Rectangle {
+                            radius: 8
+                            color: "{{ .colors.accent }}"
+                        }
+                        contentItem: Text {
+                            text: "Entrar"
+                            color: "{{ .colors.bg }}"
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.bold: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
+                }
+
+                Text {
+                    id: errorText
+                    Layout.fillWidth: true
+                    color: "{{ .colors.accent_bright }}"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pointSize: 9
+                    text: ""
+                }
+            }
+        }
+    }
+
+    // Botões de sessão (suspender/reiniciar/desligar) no canto — mesma paleta, texto simples
+    // em vez de reimplementar o menu de sessão do Quickshell aqui (não faz sentido duplicar
+    // essa lógica antes do login).
+    Row {
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 20
+        spacing: 16
+
+        Text {
+            text: "Suspender"
+            color: "{{ .colors.fg_muted }}"
+            font.family: "JetBrainsMono Nerd Font"
+            font.pointSize: 10
+            MouseArea { anchors.fill: parent; onClicked: sddm.suspend() }
+        }
+        Text {
+            text: "Reiniciar"
+            color: "{{ .colors.fg_muted }}"
+            font.family: "JetBrainsMono Nerd Font"
+            font.pointSize: 10
+            MouseArea { anchors.fill: parent; onClicked: sddm.reboot() }
+        }
+        Text {
+            text: "Desligar"
+            color: "{{ .colors.fg_muted }}"
+            font.family: "JetBrainsMono Nerd Font"
+            font.pointSize: 10
+            MouseArea { anchors.fill: parent; onClicked: sddm.powerOff() }
+        }
+    }
+
+    function doLogin() {
+        errorText.text = ""
+        sddm.login(userBox.currentIndex, passwordField.text, sessionBox.currentIndex)
+    }
+
+    Connections {
+        target: sddm
+        function onLoginFailed() {
+            errorText.text = "Senha incorreta"
+            passwordField.text = ""
+        }
+    }
+}

@@ -1,0 +1,34 @@
+# GTK3 — override das cores NOMEADAS que o tema-base (Adwaita-dark) usa internamente, com os
+# valores do nosso colors.yaml. Essa é a técnica padrão pra retemar GTK sem escrever um tema
+# inteiro do zero: o Adwaita (e a maioria dos temas GTK sérios) já usa essas variáveis
+# semânticas (@theme_bg_color, @theme_selected_bg_color, etc.) em vez de cor fixa — então
+# redefinir as variáveis já propaga a cor certa pra Thunar, diálogos de arquivo, GTK do
+# Firefox/Chromium, etc.
+# NÃO editar o arquivo final direto — editar este .tmpl e rodar `chezmoi apply`.
+
+@define-color theme_bg_color {{ .colors.bg }};
+@define-color theme_fg_color {{ .colors.fg }};
+@define-color theme_base_color {{ .colors.bg_alt }};
+@define-color theme_text_color {{ .colors.fg }};
+@define-color theme_selected_bg_color {{ .colors.accent }};
+@define-color theme_selected_fg_color {{ .colors.bg }};
+
+@define-color insensitive_bg_color {{ .colors.bg_alt }};
+@define-color insensitive_fg_color {{ .colors.fg_muted }};
+@define-color insensitive_base_color {{ .colors.bg }};
+
+@define-color borders {{ .colors.border_inactive }};
+@define-color unfocused_borders {{ .colors.border_inactive }};
+@define-color theme_unfocused_bg_color {{ .colors.bg }};
+@define-color theme_unfocused_fg_color {{ .colors.fg_muted }};
+@define-color theme_unfocused_base_color {{ .colors.bg_darker }};
+@define-color theme_unfocused_selected_bg_color {{ .colors.accent_dim }};
+@define-color theme_unfocused_selected_fg_color {{ .colors.fg }};
+
+# Verde/amarelo "de fábrica" viram vermelho — mesma lógica do resto da paleta (kitty, aether.nvim):
+# menos cores de estado "genéricas", mais vermelho espalhado, mas sem perder o alerta visual
+# (accent_bright é bem mais claro que accent/accent_dim, então continua lendo como "atenção").
+@define-color warning_color {{ .colors.accent_dim }};
+@define-color error_color {{ .colors.accent_bright }};
+@define-color success_color {{ .colors.accent_dim }};
+@define-color destructive_color {{ .colors.accent_bright }};

@@ -1,0 +1,55 @@
+# tmux.conf — gerado pelo chezmoi a partir de .chezmoidata/colors.yaml (doc 03/07).
+# NÃO editar o arquivo final direto (~/.config/tmux/tmux.conf) — editar este .tmpl e rodar
+# `chezmoi apply`.
+#
+# Status bar usa a mesma paleta do kitty (doc 07): fundo bg_darker, aba ativa em accent,
+# abas inativas em fg_muted sobre bg_alt — mesmo vocabulário visual da tab bar do kitty
+# (kitty.conf.tmpl), pra terminal multiplexado e terminal simples parecerem a mesma ferramenta.
+
+# -- Geral -----------------------------------------------------------
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",xterm-256color:RGB" # truecolor de verdade dentro do tmux (kitty já
+                                                  # suporta, sem isso o tmux capa a paleta)
+set -g mouse on
+set -g base-index 1              # workspaces do Hyprland também começam em 1 (doc 07) — consistente
+setw -g pane-base-index 1
+set -g renumber-windows on
+set -g escape-time 10             # sem delay perceptível ao apertar Esc (relevante usando Neovim dentro)
+set -g history-limit 10000
+set -g focus-events on
+
+# -- Split de painel mais intuitivo (mantém o diretório atual) -------
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+unbind '"'
+unbind %
+
+# -- Navegação de painel vim-like (h/j/k/l) — mesmo princípio do movefocus do Hyprland (doc 07)
+bind -n M-h select-pane -L
+bind -n M-j select-pane -D
+bind -n M-k select-pane -U
+bind -n M-l select-pane -R
+
+# -- Modo cópia vim-like (v seleciona, y copia pro clipboard do sistema via wl-clipboard) ------
+setw -g mode-keys vi
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
+
+# -- Recarregar config sem sair da sessão ----------------------------
+bind r source-file ~/.config/tmux/tmux.conf \; display "tmux.conf recarregado"
+
+# -- Status bar (paleta do colors.yaml, mesmo vocabulário do kitty) --
+set -g status-position top
+set -g status-style "bg={{ .colors.bg_darker }},fg={{ .colors.fg_muted }}"
+set -g status-left-length 20
+set -g status-left "#[bg={{ .colors.accent }},fg={{ .colors.bg }},bold] #S #[bg={{ .colors.bg_darker }},fg={{ .colors.fg_muted }}] "
+set -g status-right "#[fg={{ .colors.fg_muted }}]%H:%M "
+set -g status-right-length 20
+
+setw -g window-status-format " #I:#W "
+setw -g window-status-current-format "#[bg={{ .colors.accent }},fg={{ .colors.bg }},bold] #I:#W "
+
+set -g pane-border-style "fg={{ .colors.border_inactive }}"
+set -g pane-active-border-style "fg={{ .colors.accent }}"
+
+set -g message-style "bg={{ .colors.bg_alt }},fg={{ .colors.fg }}"

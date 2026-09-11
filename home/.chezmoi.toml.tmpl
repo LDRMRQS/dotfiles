@@ -1,0 +1,20 @@
+# .chezmoi.toml.tmpl — config do próprio chezmoi (doc 06). Vira ~/.config/chezmoi/chezmoi.toml
+# depois de renderizado. O ".tmpl" aqui existe só pra permitir usar `promptString`/variáveis se
+# um dia isso rodar em mais de uma máquina (doc 06 menciona isso como motivador original do
+# chezmoi) — hoje é praticamente estático.
+
+encryption = "age"
+
+[age]
+    # Chave PÚBLICA age — não é segredo, pode ficar versionada (é ela que CRIPTOGRAFA os arquivos
+    # sensíveis antes de irem pro Git, não decifra). A chave PRIVADA correspondente fica em
+    # ~/.config/chezmoi/key.txt, fora do repositório, nunca commitada (doc 06) — precisa existir
+    # nessa máquina (gerada com `age-keygen` ou restaurada de um backup seguro) ANTES do primeiro
+    # `chezmoi apply` rodar em cima de qualquer secret criptografado, senão o apply falha ao
+    # tentar decifrar.
+    identity = "~/.config/chezmoi/key.txt"
+    recipient = "age1SUBSTITUA_PELA_SUA_CHAVE_PUBLICA_AGE_REAL_AQUI"
+
+[data]
+    # Nada aqui de propósito — a paleta de cores já vem de home/.chezmoidata/colors.yaml (doc 07),
+    # que o chezmoi carrega automaticamente sem precisar ser referenciado nesta seção.

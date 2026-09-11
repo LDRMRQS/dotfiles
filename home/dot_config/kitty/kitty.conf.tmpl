@@ -1,0 +1,97 @@
+# kitty — config gerada pelo chezmoi a partir de .chezmoidata/colors.yaml
+# Base: adaptação da config antiga (kitty.conf + current-theme.conf, que era Catppuccin-Mocha
+# customizado). NÃO editar o arquivo final direto (~/.config/kitty/kitty.conf) — editar este
+# .tmpl e rodar `chezmoi apply`.
+#
+# Consolidação: a config antiga separava kitty.conf (fonte/layout) de current-theme.conf (cores),
+# pensado pra trocar de tema facilmente. Como decidimos paleta fixa via colors.yaml (não mais
+# pywal/troca de tema), um único arquivo é mais simples e igual de fácil de manter.
+
+allow_remote_control yes
+
+#-- Fonte --------------------------------------------------------
+# JetBrains Mono Nerd — decidido (doc 07) sobre Adwaita Mono e sobre a CaskaydiaCove Nerd Font
+# da config antiga: reutiliza a mesma família em terminal/editor/lockscreen, sem importar mais
+# uma fonte só pra isso — coerência tipográfica em vez de um pedaço do sistema com voz própria.
+font_family      JetBrainsMono Nerd Font Mono
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+font_size 12
+
+#-- Janela / layout ------------------------------------------------
+background_opacity 0.85
+background_blur 8
+window_padding_width 10
+tab_bar_min_tabs    2
+tab_bar_edge        top
+tab_bar_style       powerline
+tab_powerline_style slanted
+tab_title_template  {index} {title}{' :{}:'.format(num_windows) if num_windows > 1 else ''}
+
+#-- Input ----------------------------------------------------------
+touch_scroll_multiplier 10
+enable_audio_bell no
+
+#-- Cores (do colors.yaml — mashup brutalism+NES) -------------------
+background {{ .colors.bg }}
+foreground {{ .colors.fg }}
+selection_background {{ .colors.accent_bright }}
+selection_foreground {{ .colors.bg }}
+background_opacity 1.0
+
+# Cursor
+cursor {{ .colors.accent_bright }}
+cursor_text_color {{ .colors.bg }}
+cursor_shape block
+cursor_beam_thickness 1.5
+
+# Tab bar
+active_tab_foreground   {{ .colors.bg }}
+active_tab_background   {{ .colors.accent }}
+inactive_tab_foreground {{ .colors.fg_muted }}
+inactive_tab_background {{ .colors.bg_alt }}
+tab_bar_background      {{ .colors.bg_darker }}
+
+# Bordas da janela kitty
+active_border_color   {{ .colors.border_active }}
+inactive_border_color {{ .colors.border_inactive }}
+bell_border_color     {{ .colors.accent_bright }}
+
+# As 16 cores ANSI — abordagem "monocromático + vermelho espalhado" (mesmo princípio do
+# colors.yaml/aether.nvim, ver doc 07): a maioria dos slots vira tom neutro de cinza em vez da
+# cor "de fábrica" (verde/azul/ciano/magenta), com o vermelho ocupando mais espaço que o usual
+# (não só slots 1/9) — mas sem virar sintaxe ilegível, por isso os slots continuam distintos
+# entre fg/fg_muted/accent/accent_dim/accent_bright.
+
+# black
+color0  {{ .colors.bg_alt }}
+color8  {{ .colors.border_inactive }}
+
+# red
+color1  {{ .colors.accent }}
+color9  {{ .colors.accent_bright }}
+
+# green -> cinza neutro (paleta monocromática, não convencional de propósito)
+color2  {{ .colors.fg_muted }}
+color10 {{ .colors.fg }}
+
+# yellow -> vermelho apagado (mais presença de vermelho, ver decisão "mais vermelho espalhado")
+color3  {{ .colors.accent_dim }}
+color11 {{ .colors.accent_bright }}
+
+# blue -> cinza neutro
+color4  {{ .colors.fg_muted }}
+color12 {{ .colors.fg }}
+
+# magenta -> vermelho apagado
+color5  {{ .colors.accent_dim }}
+color13 {{ .colors.accent_bright }}
+
+# cyan -> cinza neutro
+color6  {{ .colors.fg_muted }}
+color14 {{ .colors.fg }}
+
+# white
+color7  {{ .colors.fg }}
+color15 {{ .colors.fg }}

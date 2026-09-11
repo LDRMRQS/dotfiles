@@ -1,0 +1,48 @@
+# starship.toml — gerado pelo chezmoi a partir de .chezmoidata/colors.yaml (doc 07/03).
+# NÃO editar o arquivo final direto (~/.config/starship.toml) — editar este .tmpl e rodar
+# `chezmoi apply`.
+#
+# Base: o prompt do próprio Omarchy (config/starship.toml no repo dele) — você pediu
+# especificamente esse estilo ("bem simplista"). É rigorosamente minimalista: só diretório
+# (truncado a 2 níveis) + branch/status do git + o símbolo de prompt (❯/✗), nada de módulo de
+# linguagem/runtime/bateria/etc. poluindo a linha. A ÚNICA mudança em relação ao original é a
+# cor: o Omarchy usa ciano fixo (a cor de marca dele) — aqui trocamos por `{{ .colors.accent }}`
+# direto do colors.yaml (starship aceita hex cru no `style`, sem precisar de `trimPrefix`), pra
+# não introduzir uma cor que não existe em nenhum outro canto do sistema. Estrutura, símbolos e
+# comportamento são idênticos ao original.
+add_newline = true
+command_timeout = 200
+format = "[$directory$git_branch$git_status]($style)$character"
+
+[character]
+# Erro em accent_bright (mesmo tom usado em alertas/senha errada no resto do sistema — hyprlock,
+# GTK error_color) em vez do mesmo ciano pro sucesso e erro que o Omarchy usa; sucesso fica no
+# accent normal. Pequeno desvio do original, mas mais coerente com o resto da paleta (accent =
+# neutro/informativo, accent_bright = alerta).
+error_symbol = "[✗](bold {{ .colors.accent_bright }})"
+success_symbol = "[❯](bold {{ .colors.accent }})"
+
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+repo_root_style = "bold {{ .colors.accent }}"
+repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+format = "[$branch]($style) "
+style = "italic {{ .colors.accent }}"
+
+[git_status]
+format     = '[$all_status]($style)'
+style      = "{{ .colors.accent_dim }}"
+ahead      = "⇡${count} "
+diverged   = "⇕⇡${ahead_count}⇣${behind_count} "
+behind     = "⇣${count} "
+conflicted = " "
+up_to_date = " "
+untracked  = "? "
+modified   = " "
+stashed    = ""
+staged     = ""
+renamed    = ""
+deleted    = ""
